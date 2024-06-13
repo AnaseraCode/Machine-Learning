@@ -44,10 +44,31 @@
             echo '<div class="mt-6">';
             if ($terupload) {
                 echo "<p class='text-green-400 font-semibold'>Upload successful!</p>";
-                echo "<p class='text-white'>Dataset link: <a href='".$dirUpload.$namaFile."' class='text-blue-400 underline'>".$namaFile."</a></p>";
-                $hasil = panggil_model();
-                echo "<p class='text-white'>Prediction result: ".$hasil."</p>";
-                echo "<p class='text-white'>Result link: <a href='hasil.csv' class='text-blue-400 underline'>hasil.csv</a></p>";
+                echo "<p class='text-white'>Link Dataset : <a href='".$dirUpload.$namaFile."' class='text-blue-400 underline'>".$namaFile."</a></p>";
+                panggil_model();
+                $hasil = array_map('str_getcsv', file('hasil.csv'));
+                
+                echo "<p class='text-white'>Hasil Prediksi :</p>";
+                echo "<table class='min-w-full bg-gray-700 text-white'>";
+                echo "<thead><tr>";
+                foreach ($hasil[0] as $header) {
+                    echo "<th class='py-2 px-4 border-b border-gray-600'>$header</th>";
+                }
+                echo "</tr></thead><tbody>";
+                
+                for ($i = 1; $i < min(11, count($hasil)); $i++) {
+                    echo "<tr>";
+                    foreach ($hasil[$i] as $value) {
+                        echo "<td class='py-2 px-4 border-b border-gray-600'>$value</td>";
+                    }
+                    echo "</tr>";
+                }
+                echo "</tbody></table>";
+
+                if (count($hasil) > 10) {
+                    echo "<p class='text-white mt-4'>Untuk melihat lebih lengkap, silahkan download file hasil dibawah ini.</p>";
+                }
+                echo "<p class='text-white'>Link Hasil : <a href='hasil.csv' class='text-blue-400 underline'>hasil.csv</a></p>";
             } else {
                 echo "<p class='text-red-400 font-semibold'>Upload failed!</p>";
             }
